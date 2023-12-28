@@ -1,0 +1,43 @@
+body {
+    margin: 0;
+}
+
+#root {
+    font-family    : Roboto, Helvetica, Arial, sans-serif;
+    --primary-color: #184E77;
+    --accent-color : #34A0A4;
+}
+
+.container {
+    max-width: 1200px;
+    margin   : 0 auto;
+    padding  : 0 1rem;
+}
+
+h1 {
+    font-size: 3rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+}
+
+.color-primary {
+    color: var(--primary-color);
+}
+
+.color-accent {
+    color: var(--accent-color);
+}
+
+.bg-primary {
+    background-color: var(--primary-color);
+}
+
+.bg-accent {
+    background-color: var(--accent-color);
+}

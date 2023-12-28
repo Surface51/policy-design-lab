@@ -1,0 +1,16 @@
+.controls-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 3rem;
+}
+
+.input-group {
+    display       : flex;
+    flex-direction: column;
+    gap           : .5rem;
+}
+
+.input-group .input-label{
+    font-weight: bold;
+    font-size: 1.25rem;
+}
