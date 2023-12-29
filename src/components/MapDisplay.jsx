@@ -26,14 +26,13 @@ const colorScale = scaleQuantize()
 const MapDisplay = () => {
   const [data, setData] = useState([]);
   const [geo, setGeo] = useState([]);
-  const [stateGeo, setStateGeo] = useState([]);
   const benchmark_ratio = 0.86;
 
   useEffect(() => {
-    json("json/new-geo-states.json").then((data) => {
+    json("json/counties-10m.json").then((data) => {
       setGeo(data);
     });
-    csv("/Book1.2020.corn.csv").then((counties) => {
+    csv("csv/all_2014.csv").then((counties) => {
       setData(counties);
     });
   }, []);
@@ -45,14 +44,14 @@ const MapDisplay = () => {
           <Geographies geography={geo} borders={"#fff"}>
             {({ geographies }) => {
               let top_geos = geographies.filter((g) => {
-                const cur = data.find((s) => s.FIPS === g.id);
+                const cur = data.find((s) => s.fips === g.id);
                 let arc_pay = 0;
 
                 if (cur) {
-                  const benchmark_rev = cur.benchmark * cur.benchmark_price;
+                  const benchmark_rev = cur.bchmk * cur.bchmk_prc;
                   const guarantee = benchmark_rev * benchmark_ratio;
                   const max_pay = benchmark_rev * 0.1;
-                  const act_rev = cur.act_yield * cur.natl_price;
+                  const act_rev = cur.act_yld * cur.nat_prc;
                   const form = Math.max(guarantee - act_rev, 0);
                   arc_pay = Math.min(max_pay, form);
                 }
@@ -65,10 +64,10 @@ const MapDisplay = () => {
                 let arc_pay = 0;
 
                 if (cur) {
-                  const benchmark_rev = cur.benchmark * cur.benchmark_price;
+                  const benchmark_rev = cur.bchmk * cur.bchmk_prc;
                   const guarantee = benchmark_rev * benchmark_ratio;
                   const max_pay = benchmark_rev * 0.1;
-                  const act_rev = cur.act_yield * cur.natl_price;
+                  const act_rev = cur.act_yld * cur.nat_prc;
                   const form = Math.max(guarantee - act_rev, 0);
                   arc_pay = Math.min(max_pay, form);
                 }
@@ -80,25 +79,24 @@ const MapDisplay = () => {
 
               return results.map((g) => {
                 const cur = data.find((s) => s.FIPS === g.id);
+                console.log({ cur });
+
                 let arc_pay = null;
+                let found = true;
 
                 if (cur) {
                   const FIPS = cur.FIPS;
-                  const benchmark_rev = cur.benchmark * cur.benchmark_price;
+                  const benchmark_rev = cur.bchmk * cur.bchmk_prc;
+                  console.log({ benchmark_rev });
                   const guarantee = benchmark_rev * benchmark_ratio;
                   const max_pay = benchmark_rev * 0.1;
-                  const act_rev = cur.act_yield * cur.natl_price;
+                  const act_rev = cur.act_yld * cur.nat_prc;
                   const form = Math.max(guarantee - act_rev, 0);
                   arc_pay = Math.min(max_pay, form);
 
-                  const state = g.id.substring(0, 2);
-                  var found = state === "17" || state === "19";
+                  // const state = g.id.substring(0, 2);
+                  // Relavent Fips Codes | IL - 17 | IA - 19
                 }
-
-                // Relavent Fips Codes
-                // Ill - 17
-                // Iowa - 19
-                // Wisconsin - 55
 
                 return (
                   <Geography
