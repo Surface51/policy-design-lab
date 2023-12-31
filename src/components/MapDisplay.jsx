@@ -25,12 +25,16 @@ const colorScale = scaleQuantize()
 
 const MapDisplay = () => {
   const [data, setData] = useState([]);
+  const [stateGeo, setStateGeo] = useState([]);
   const [geo, setGeo] = useState([]);
   const benchmark_ratio = 0.86;
 
   useEffect(() => {
     json("json/counties-10m.json").then((data) => {
       setGeo(data);
+    });
+    json("json/states-10m.json").then((data) => {
+      setStateGeo(data);
     });
     csv("csv/all_2014.csv").then((counties) => {
       setData(counties);
@@ -43,57 +47,54 @@ const MapDisplay = () => {
         <ZoomableGroup>
           <Geographies geography={geo} borders={"#fff"}>
             {({ geographies }) => {
-              let top_geos = geographies.filter((g) => {
+              // let top_geos = geographies.filter((g) => {
+              //   const cur = data.find((s) => s.fips === g.id);
+              //   let arc_pay = 0;
+
+              //   if (cur) {
+              //     const benchmark_rev = cur.bchmk * cur.bchmk_prc;
+              //     const guarantee = benchmark_rev * benchmark_ratio;
+              //     const max_pay = benchmark_rev * 0.1;
+              //     const act_rev = cur.act_yld * cur.nat_prc;
+              //     const form = Math.max(guarantee - act_rev, 0);
+              //     arc_pay = Math.min(max_pay, form);
+              //   }
+
+              //   return arc_pay > 0;
+              // });
+
+              // let bottom_geos = geographies.filter((g) => {
+              //   const cur = data.find((s) => s.FIPS === g.id);
+              //   let arc_pay = 0;
+
+              //   if (cur) {
+              //     const benchmark_rev = cur.bchmk * cur.bchmk_prc;
+              //     const guarantee = benchmark_rev * benchmark_ratio;
+              //     const max_pay = benchmark_rev * 0.1;
+              //     const act_rev = cur.act_yld * cur.nat_prc;
+              //     const form = Math.max(guarantee - act_rev, 0);
+              //     arc_pay = Math.min(max_pay, form);
+              //   }
+
+              //   return arc_pay == 0;
+              // });
+
+              // const results = bottom_geos.concat(top_geos);
+
+              return geographies.map((g) => {
                 const cur = data.find((s) => s.fips === g.id);
-                let arc_pay = 0;
-
-                if (cur) {
-                  const benchmark_rev = cur.bchmk * cur.bchmk_prc;
-                  const guarantee = benchmark_rev * benchmark_ratio;
-                  const max_pay = benchmark_rev * 0.1;
-                  const act_rev = cur.act_yld * cur.nat_prc;
-                  const form = Math.max(guarantee - act_rev, 0);
-                  arc_pay = Math.min(max_pay, form);
-                }
-
-                return arc_pay > 0;
-              });
-
-              let bottom_geos = geographies.filter((g) => {
-                const cur = data.find((s) => s.FIPS === g.id);
-                let arc_pay = 0;
-
-                if (cur) {
-                  const benchmark_rev = cur.bchmk * cur.bchmk_prc;
-                  const guarantee = benchmark_rev * benchmark_ratio;
-                  const max_pay = benchmark_rev * 0.1;
-                  const act_rev = cur.act_yld * cur.nat_prc;
-                  const form = Math.max(guarantee - act_rev, 0);
-                  arc_pay = Math.min(max_pay, form);
-                }
-
-                return arc_pay == 0;
-              });
-
-              const results = bottom_geos.concat(top_geos);
-
-              return results.map((g) => {
-                const cur = data.find((s) => s.FIPS === g.id);
-                console.log({ cur });
 
                 let arc_pay = null;
                 let found = true;
 
                 if (cur) {
-                  const FIPS = cur.FIPS;
                   const benchmark_rev = cur.bchmk * cur.bchmk_prc;
-                  console.log({ benchmark_rev });
+                  // console.log({ benchmark_rev });
                   const guarantee = benchmark_rev * benchmark_ratio;
                   const max_pay = benchmark_rev * 0.1;
                   const act_rev = cur.act_yld * cur.nat_prc;
                   const form = Math.max(guarantee - act_rev, 0);
                   arc_pay = Math.min(max_pay, form);
-
                   // const state = g.id.substring(0, 2);
                   // Relavent Fips Codes | IL - 17 | IA - 19
                 }
@@ -124,6 +125,40 @@ const MapDisplay = () => {
                 );
               });
             }}
+          </Geographies>
+          <Geographies
+            geography={stateGeo}
+            style={{ position: "absolute", top: 0 }}
+          >
+            {({ geographies }) =>
+              geographies.map((geo) => (
+                <Geography
+                  key={geo.rsmKey}
+                  geography={geo}
+                  style={{
+                    default: {
+                      fill: "transparent",
+                      stroke: "#000",
+                      strokeWidth: 0.75,
+                      outline: "red",
+                    },
+                    hover: {
+                      fill: "#000",
+                      fillOpacity: 0.2,
+                      stroke: "#000",
+                      strokeWidth: 0.75,
+                      outline: "none",
+                    },
+                    pressed: {
+                      fill: "#000",
+                      stroke: "#000",
+                      strokeWidth: 0.75,
+                      outline: "none",
+                    },
+                  }}
+                />
+              ))
+            }
           </Geographies>
         </ZoomableGroup>
       </ComposableMap>
