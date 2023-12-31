@@ -3,7 +3,7 @@ import "rc-slider/assets/index.css";
 
 import Select from "react-dropdown-select";
 
-const MapControls = () => {
+const MapControls = ({ setYear }) => {
   const cropOptions = [
     { value: "corn", label: "Corn" },
     { value: "soybeans", label: "Soybeans" },
@@ -95,7 +95,7 @@ const MapControls = () => {
           defaultValue={2014}
           min={2014}
           max={2020}
-          onChangeComplete={(value) => console.log(value)}
+          onChangeComplete={(value) => setYear(value)}
         />
       </div>
       <div className="input-group dropdown">

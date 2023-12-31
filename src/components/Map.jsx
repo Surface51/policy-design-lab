@@ -1,11 +1,14 @@
+import { useEffect, useState } from "react";
 import MapControls from "./MapControls";
 import MapDisplay from "./MapDisplay";
 const Map = () => {
+  const [year, setYear] = useState(2014);
+
   return (
     <section className="map-container container">
-      <MapControls />
+      <MapControls setYear={setYear} />
       <hr />
-      <MapDisplay />
+      <MapDisplay year={year} />
       <hr />
     </section>
   );

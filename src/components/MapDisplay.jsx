@@ -23,23 +23,60 @@ const colorScale = scaleQuantize()
     "#184E77",
   ]);
 
-const MapDisplay = () => {
+const MapDisplay = ({ year }) => {
   const [data, setData] = useState([]);
   const [stateGeo, setStateGeo] = useState([]);
   const [geo, setGeo] = useState([]);
+  const [loaded, setLoaded] = useState(false);
   const benchmark_ratio = 0.86;
+  const [yearData, setYearData] = useState({});
 
   useEffect(() => {
+    console.log("json/counties-10m.json");
     json("json/counties-10m.json").then((data) => {
       setGeo(data);
     });
+  }, []);
+
+  useEffect(() => {
+    console.log("json/states-10m.json");
     json("json/states-10m.json").then((data) => {
       setStateGeo(data);
     });
-    csv("csv/all_2014.csv").then((counties) => {
-      setData(counties);
+  }, []);
+
+  useEffect(() => {
+    const years = [2014, 2015, 2016, 2017, 2018, 2019, 2020];
+    const promises = years.map((year) =>
+      csv(`csv/all_${year}.csv`).then((data) => data)
+    );
+    Promise.all(promises).then((results) => {
+      // Create an object with the year as the key and the data as the value
+      results = results.reduce((acc, result, index) => {
+        acc[years[index]] = result;
+        return acc;
+      }, {});
+      console.log("Fetched everything!", results);
+      setYearData({
+        ...yearData,
+        ...results,
+      });
+      console.log("Initial data!", results[year]);
+      setData(results[year]);
+      setLoaded(true);
     });
   }, []);
+
+  useEffect(() => {
+    // Wait for the data to be fetched
+    if (!loaded) return;
+    console.log("Changing data!", yearData[year]);
+    setData(yearData[year]);
+  }, [year]);
+
+  useEffect(() => {
+    console.log("Year data changed!", yearData);
+  }, [yearData]);
 
   return (
     <>
@@ -108,6 +145,16 @@ const MapDisplay = () => {
                     }
                     stroke={found && arc_pay > 0 ? "#000" : "#FFF"}
                     style={{
+                      default: {
+                        fill:
+                          found && arc_pay > 0
+                            ? colorScale(arc_pay)
+                            : "#F2F2F2",
+                        stroke:
+                          found && arc_pay > 0 ? "#000" : "rgb(72, 72, 72)",
+                        strokeWidth: found && arc_pay > 0 ? 0.5 : 0.1,
+                        outline: "none",
+                      },
                       hover: {
                         fill: "#000",
                         stroke: "#000",
@@ -139,7 +186,7 @@ const MapDisplay = () => {
                     default: {
                       fill: "transparent",
                       stroke: "#000",
-                      strokeWidth: 0.75,
+                      strokeWidth: 0.5,
                       outline: "red",
                     },
                     hover: {
