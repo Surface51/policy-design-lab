@@ -38,7 +38,7 @@ jobs:
         
       # Add this step to run your build process
       - name: Build static content
-        run: npm run build
+        run: vite build --base=/policy-design-lab/
         # Replace 'npm run build' with your build command
 
       - name: Setup Pages
