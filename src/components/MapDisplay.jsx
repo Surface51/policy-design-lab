@@ -23,7 +23,7 @@ const colorScale = scaleQuantize()
     "#184E77",
   ]);
 
-const MapDisplay = ({ year }) => {
+const MapDisplay = ({ year, cropTypes, setCropTypes }) => {
   const [data, setData] = useState([]);
   const [stateGeo, setStateGeo] = useState([]);
   const [geo, setGeo] = useState([]);
