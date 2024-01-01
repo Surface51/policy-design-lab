@@ -35,6 +35,7 @@ const MapDisplay = ({ year }) => {
     console.log("json/counties-10m.json");
     json("json/counties-10m.json").then((data) => {
       setGeo(data);
+      console.log("Geo county data loaded!");
     });
   }, []);
 
@@ -42,6 +43,7 @@ const MapDisplay = ({ year }) => {
     console.log("json/states-10m.json");
     json("json/states-10m.json").then((data) => {
       setStateGeo(data);
+      console.log("Geo state data loaded!");
     });
   }, []);
 
@@ -56,68 +58,31 @@ const MapDisplay = ({ year }) => {
         acc[years[index]] = result;
         return acc;
       }, {});
-      console.log("Fetched everything!", results);
+
       setYearData({
         ...yearData,
         ...results,
       });
-      console.log("Initial data!", results[year]);
+
       setData(results[year]);
       setLoaded(true);
+      console.log("Data loaded!");
     });
   }, []);
 
   useEffect(() => {
     // Wait for the data to be fetched
     if (!loaded) return;
-    console.log("Changing data!", yearData[year]);
     setData(yearData[year]);
+    console.log("Year set!");
   }, [year]);
-
-  useEffect(() => {
-    console.log("Year data changed!", yearData);
-  }, [yearData]);
 
   return (
     <>
-      <ComposableMap projection="geoAlbersUsa">
+      <ComposableMap projection="geoAlbersUsa" className="map-display">
         <ZoomableGroup>
           <Geographies geography={geo} borders={"#fff"}>
             {({ geographies }) => {
-              // let top_geos = geographies.filter((g) => {
-              //   const cur = data.find((s) => s.fips === g.id);
-              //   let arc_pay = 0;
-
-              //   if (cur) {
-              //     const benchmark_rev = cur.bchmk * cur.bchmk_prc;
-              //     const guarantee = benchmark_rev * benchmark_ratio;
-              //     const max_pay = benchmark_rev * 0.1;
-              //     const act_rev = cur.act_yld * cur.nat_prc;
-              //     const form = Math.max(guarantee - act_rev, 0);
-              //     arc_pay = Math.min(max_pay, form);
-              //   }
-
-              //   return arc_pay > 0;
-              // });
-
-              // let bottom_geos = geographies.filter((g) => {
-              //   const cur = data.find((s) => s.FIPS === g.id);
-              //   let arc_pay = 0;
-
-              //   if (cur) {
-              //     const benchmark_rev = cur.bchmk * cur.bchmk_prc;
-              //     const guarantee = benchmark_rev * benchmark_ratio;
-              //     const max_pay = benchmark_rev * 0.1;
-              //     const act_rev = cur.act_yld * cur.nat_prc;
-              //     const form = Math.max(guarantee - act_rev, 0);
-              //     arc_pay = Math.min(max_pay, form);
-              //   }
-
-              //   return arc_pay == 0;
-              // });
-
-              // const results = bottom_geos.concat(top_geos);
-
               return geographies.map((g) => {
                 const cur = data.find((s) => s.fips === g.id);
 
@@ -139,6 +104,7 @@ const MapDisplay = ({ year }) => {
                 return (
                   <Geography
                     key={g.rsmKey}
+                    className="county"
                     geography={g}
                     fill={
                       found && arc_pay > 0 ? colorScale(arc_pay) : "#F2F2F2"
@@ -182,24 +148,19 @@ const MapDisplay = ({ year }) => {
                 <Geography
                   key={geo.rsmKey}
                   geography={geo}
+                  className="state"
                   style={{
                     default: {
                       fill: "transparent",
                       stroke: "#000",
-                      strokeWidth: 0.5,
-                      outline: "red",
+                      strokeWidth: 0.75,
                     },
                     hover: {
                       fill: "#000",
                       fillOpacity: 0.2,
-                      stroke: "#000",
-                      strokeWidth: 0.75,
-                      outline: "none",
                     },
                     pressed: {
                       fill: "#000",
-                      stroke: "#000",
-                      strokeWidth: 0.75,
                       outline: "none",
                     },
                   }}

@@ -6,7 +6,7 @@ const Map = () => {
 
   return (
     <section className="map-container container">
-      <MapControls setYear={setYear} />
+      <MapControls year={year} setYear={setYear} />
       <hr />
       <MapDisplay year={year} />
       <hr />

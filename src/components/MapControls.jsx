@@ -1,9 +1,12 @@
+import { useState, useEffect } from "react";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 
 import Select from "react-dropdown-select";
 
-const MapControls = ({ setYear }) => {
+const MapControls = ({ year, setYear }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+
   const cropOptions = [
     { value: "corn", label: "Corn" },
     { value: "soybeans", label: "Soybeans" },
@@ -77,13 +80,40 @@ const MapControls = ({ setYear }) => {
     2020: "2020",
   };
 
+  useEffect(() => {
+    if (isPlaying) {
+      const interval = setInterval(() => {
+        setYear((prevYear) => {
+          if (prevYear >= 2020) {
+            // Stop playing when the slider reaches its end value
+            setIsPlaying(false);
+            return prevYear;
+          } else {
+            return prevYear + 1;
+          }
+        });
+      }, 1200);
+
+      // Clear the interval when the component is unmounted or when isPlaying becomes false
+      return () => clearInterval(interval);
+    }
+  }, [isPlaying]);
+
   return (
     <div className="controls-container">
       <div className="input-group play-controls">
-        <button className="btn-play">
+        <button
+          className="btn-play"
+          onClick={() => setIsPlaying(true)}
+          disabled={isPlaying}
+        >
           <div className="sr-only">Play</div>
         </button>
-        <button className="btn-stop">
+        <button
+          className="btn-stop"
+          onClick={() => setIsPlaying(false)}
+          disabled={!isPlaying}
+        >
           <div className="sr-only">Pause</div>
         </button>
       </div>
@@ -95,7 +125,12 @@ const MapControls = ({ setYear }) => {
           defaultValue={2014}
           min={2014}
           max={2020}
-          onChangeComplete={(value) => setYear(value)}
+          onChange={(value) => {
+            if (!isPlaying) {
+              setYear(value);
+            }
+          }}
+          value={year}
         />
       </div>
       <div className="input-group dropdown">
