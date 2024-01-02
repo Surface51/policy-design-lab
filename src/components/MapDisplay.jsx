@@ -23,7 +23,7 @@ const colorScale = scaleQuantize()
     "#184E77",
   ]);
 
-const MapDisplay = ({ year, cropTypes, setCropTypes }) => {
+const MapDisplay = ({ year, crop, state, cropTypes, setCropTypes }) => {
   const [data, setData] = useState([]);
   const [stateGeo, setStateGeo] = useState([]);
   const [geo, setGeo] = useState([]);
@@ -48,7 +48,9 @@ const MapDisplay = ({ year, cropTypes, setCropTypes }) => {
   useEffect(() => {
     const years = [2014, 2015, 2016, 2017, 2018, 2019, 2020];
     const promises = years.map((year) =>
-      csv(`csv/all_${year}.csv`).then((data) => data)
+      csv(`csv/all_${year}.csv`).then((data) => {
+        return data;
+      })
     );
     Promise.all(promises).then((results) => {
       // Create an object with the year as the key and the data as the value
@@ -72,8 +74,14 @@ const MapDisplay = ({ year, cropTypes, setCropTypes }) => {
     // Wait for the data to be fetched
     if (!loaded) return;
     setData(yearData[year]);
-    console.log("Year set to:", year);
   }, [year]);
+
+  useEffect(() => {
+    if (!loaded) return;
+    if (crop === "") {
+      return;
+    }
+  }, [crop, loaded]);
 
   return (
     <>
@@ -85,18 +93,22 @@ const MapDisplay = ({ year, cropTypes, setCropTypes }) => {
                 const cur = data.find((s) => s.fips === g.id);
 
                 let arc_pay = null;
-                let found = true;
+                let found = false;
 
                 if (cur) {
-                  const benchmark_rev = cur.bchmk * cur.bchmk_prc;
-                  // console.log({ benchmark_rev });
-                  const guarantee = benchmark_rev * benchmark_ratio;
-                  const max_pay = benchmark_rev * 0.1;
-                  const act_rev = cur.act_yld * cur.nat_prc;
-                  const form = Math.max(guarantee - act_rev, 0);
-                  arc_pay = Math.min(max_pay, form);
-                  // const state = g.id.substring(0, 2);
-                  // Relavent Fips Codes | IL - 17 | IA - 19
+                  if (cur.crop !== crop) {
+                    found = false;
+                  } else {
+                    const benchmark_rev = cur.bchmk * cur.bchmk_prc;
+                    const guarantee = benchmark_rev * benchmark_ratio;
+                    const max_pay = benchmark_rev * 0.1;
+                    const act_rev = cur.act_yld * cur.nat_prc;
+                    const form = Math.max(guarantee - act_rev, 0);
+                    arc_pay = Math.min(max_pay, form);
+                    found = true;
+                    // const state = g.id.substring(0, 2);
+                    // Relavent Fips Codes | IL - 17 | IA - 19
+                  }
                 }
 
                 return (
