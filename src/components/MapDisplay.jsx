@@ -32,7 +32,6 @@ const MapDisplay = ({ year, cropTypes, setCropTypes }) => {
   const [yearData, setYearData] = useState({});
 
   useEffect(() => {
-    console.log("json/counties-10m.json");
     json("json/counties-10m.json").then((data) => {
       setGeo(data);
       console.log("Geo county data loaded!");
@@ -40,7 +39,6 @@ const MapDisplay = ({ year, cropTypes, setCropTypes }) => {
   }, []);
 
   useEffect(() => {
-    console.log("json/states-10m.json");
     json("json/states-10m.json").then((data) => {
       setStateGeo(data);
       console.log("Geo state data loaded!");
@@ -66,7 +64,7 @@ const MapDisplay = ({ year, cropTypes, setCropTypes }) => {
 
       setData(results[year]);
       setLoaded(true);
-      console.log("Data loaded!");
+      console.log("Yearly data loaded!");
     });
   }, []);
 
@@ -74,7 +72,7 @@ const MapDisplay = ({ year, cropTypes, setCropTypes }) => {
     // Wait for the data to be fetched
     if (!loaded) return;
     setData(yearData[year]);
-    console.log("Year set!");
+    console.log("Year set to:", year);
   }, [year]);
 
   return (

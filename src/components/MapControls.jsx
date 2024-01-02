@@ -95,6 +95,8 @@ const MapControls = ({ crop, setCrop, setState, setYear, state, year }) => {
     2020: "2020",
   };
 
+  const intervalTime = 1200;
+
   useEffect(() => {
     if (isPlaying) {
       const interval = setInterval(() => {
@@ -107,7 +109,7 @@ const MapControls = ({ crop, setCrop, setState, setYear, state, year }) => {
             return prevYear + 1;
           }
         });
-      }, 1200);
+      }, intervalTime);
 
       // Clear the interval when the component is unmounted or when isPlaying becomes false
       return () => clearInterval(interval);
