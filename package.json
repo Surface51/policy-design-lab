@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prod": "npm run build && serve dist",
     "build": "vite build",
     "build-pages": "vite build --base=/policy-design-lab/",
     "geofilter": "node ./scripts/geofilter.js",
@@ -19,7 +20,8 @@
     "react-dom": "^18.2.0",
     "react-dropdown-select": "^4.11.0",
     "react-simple-maps": "^3.0.0",
-    "sass": "^1.69.5"
+    "sass": "^1.69.5",
+    "serve": "^14.2.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
