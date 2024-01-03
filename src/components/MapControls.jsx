@@ -34,6 +34,7 @@ const MapControls = ({ crop, setCrop, setState, setYear, state, year }) => {
   ];
 
   const stateOptions = [
+    { label: "All States", value: "all" },
     { label: "Alabama", value: "Alabama" },
     { label: "Arizona", value: "Arizona" },
     { label: "Arkansas", value: "Arkansas" },
@@ -116,6 +117,10 @@ const MapControls = ({ crop, setCrop, setState, setYear, state, year }) => {
     }
   }, [isPlaying]);
 
+  useEffect(() => {
+    setCrop(cropOptions[4].value);
+  }, []);
+
   return (
     <div className="controls-container">
       <div className="input-group play-controls">
@@ -164,7 +169,7 @@ const MapControls = ({ crop, setCrop, setState, setYear, state, year }) => {
         <div className="input-label">CROP TYPE</div>
         <Select
           options={cropOptions}
-          values={[cropOptions[0]]}
+          values={[cropOptions[4]]}
           onChange={(value) => {
             setCrop(value[0].value);
           }}

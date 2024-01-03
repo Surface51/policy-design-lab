@@ -164,10 +164,14 @@ const MapDisplay = ({ year, crop, state, cropTypes, setCropTypes }) => {
                       fill: "transparent",
                       stroke: "#000",
                       strokeWidth: 0.75,
+                      outline: "none",
                     },
                     hover: {
                       fill: "#000",
                       fillOpacity: 0.2,
+                      stroke: "#000",
+                      strokeWidth: 0.75,
+                      outline: "none",
                     },
                     pressed: {
                       fill: "#000",
