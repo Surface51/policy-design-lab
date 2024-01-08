@@ -3,3 +3,21 @@
         transition: fill .3s;
     }
 }
+
+.map-container {
+    position: relative;
+
+    .__react_component_tooltip {
+        background-color: $primary;
+        color           : white;
+        border-radius   : 0;
+        padding         : 1rem;
+        font-size       : 1.4rem;
+        font-weight     : 400;
+        box-shadow      : 0 0 10px rgba(0, 0, 0, .5);
+
+        &::after {
+            border-top-color: $primary !important;
+        }
+    }
+}

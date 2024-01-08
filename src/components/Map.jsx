@@ -1,12 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MapControls from "./MapControls";
 import MapDisplay from "./MapDisplay";
+import ReactToolTip from "react-tooltip";
+
 const Map = () => {
   const [year, setYear] = useState(2014);
   const [cropTypes, setCropTypes] = useState([]);
   const [crop, setCrop] = useState("");
   const [stateTypes, setStateTypes] = useState([]);
   const [state, setState] = useState("");
+  const [tooltipContent, setTooltipContent] = useState("");
+
+  useEffect(() => {
+    setState("all");
+  }, []);
 
   return (
     <section className="map-container container">
@@ -27,7 +34,9 @@ const Map = () => {
         setCropTypes={setCropTypes}
         state={state}
         year={year}
+        setTooltipContent={setTooltipContent}
       />
+      <ReactToolTip>{tooltipContent}</ReactToolTip>
       <hr />
     </section>
   );

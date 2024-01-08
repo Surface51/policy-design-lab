@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
+import { Tooltip } from "react-tooltip";
 import {
   ComposableMap,
   Geographies,
@@ -10,6 +11,7 @@ import {
 import { scaleQuantize } from "d3-scale";
 import { csv, json } from "d3-fetch";
 import { geoCentroid } from "d3-geo";
+import { debounce } from "lodash";
 
 import allStates from "../data/allstates.json";
 
@@ -40,16 +42,29 @@ const offsets = {
   DC: [49, 21],
 };
 
-const MapDisplay = ({ year, crop, state, cropTypes, setCropTypes }) => {
+const MapDisplay = ({
+  year,
+  crop,
+  state,
+  cropTypes,
+  tooltipContent,
+  setCropTypes,
+  setTooltipContent,
+}) => {
   const [data, setData] = useState([]);
   const [stateGeo, setStateGeo] = useState([]);
   const [geo, setGeo] = useState([]);
   const [loaded, setLoaded] = useState(false);
-  const benchmark_ratio = 0.86;
   const [yearData, setYearData] = useState({});
   const [center, setCenter] = useState([-96, 37.8]);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [stateGeoData, setStateGeoData] = useState([]);
+  const benchmark_ratio = 0.86;
+
+  const debounceTooltip = debounce((content) => {
+    console.log("Mouse Enter County debounced.");
+    setTooltipContent(content);
+  }, 500);
 
   useEffect(() => {
     json("json/counties-10m.json").then((data) => {
@@ -61,7 +76,7 @@ const MapDisplay = ({ year, crop, state, cropTypes, setCropTypes }) => {
   useEffect(() => {
     json("json/states-10m.json").then((data) => {
       setStateGeo(data);
-      console.log("Geo state data loaded!");
+      console.log("Geo state data loaded!", data);
     });
   }, []);
 
@@ -125,7 +140,7 @@ const MapDisplay = ({ year, crop, state, cropTypes, setCropTypes }) => {
   }, [stateGeoData, state]);
 
   return (
-    <>
+    <div data-tip="">
       <ComposableMap projection="geoAlbersUsa" className="map-display">
         <ZoomableGroup
           center={center}
@@ -167,6 +182,12 @@ const MapDisplay = ({ year, crop, state, cropTypes, setCropTypes }) => {
                     fill={
                       found && arc_pay > 0 ? colorScale(arc_pay) : "#F2F2F2"
                     }
+                    onMouseEnter={() => {
+                      setTooltipContent(found ? `ARC-CO Adjusted Payment Rate: $${arc_pay.toFixed(2)}` : "No Data");
+                    }}
+                    onMouseLeave={() => {
+                      setTooltipContent("");
+                    }}
                     stroke={found && arc_pay > 0 ? "#000" : "#FFF"}
                     style={{
                       default: {
@@ -231,19 +252,14 @@ const MapDisplay = ({ year, crop, state, cropTypes, setCropTypes }) => {
                       }}
                     />
                   ))}
-                  {geographies.map((geo) => {
-                    const centroid = geoCentroid(geo);
-                    const cur = allStates.find((s) => s.val === geo.id);
-                    return <g key={geo.rsmKey + "-name"}></g>;
-                  })}
                 </>
               );
             }}
           </Geographies>
         </ZoomableGroup>
       </ComposableMap>
-    </>
+    </div>
   );
 };
 
-export default MapDisplay;
+export default memo(MapDisplay);
