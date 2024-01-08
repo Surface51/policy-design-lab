@@ -11,7 +11,7 @@ function App() {
         <div className="content-container">
           <b>The value of visualization.</b> The data visualizations below
           provide a proof of concept showcasing how
-          <b>modeling and research can be applied to policy innovations.</b>
+          <b> modeling and research can be applied to policy innovations.</b>
           Specifically, these visuals offer insight into changes to a particular
           farm payment program—the Agriculture Risk Coverage, county coverage
           option (ARC-CO). By choosing a year, state, and crop, you can swiftly
