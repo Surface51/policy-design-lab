@@ -140,7 +140,7 @@ const MapDisplay = ({
   }, [stateGeoData, state]);
 
   return (
-    <div data-tip="">
+    <div data-tip="" data-html={true}>
       <ComposableMap projection="geoAlbersUsa" className="map-display">
         <ZoomableGroup
           center={center}
@@ -180,24 +180,35 @@ const MapDisplay = ({
                     className="county"
                     geography={g}
                     fill={
-                      found && arc_pay > 0 ? colorScale(arc_pay) : "#F2F2F2"
+                      found && arc_pay >= 0 ? colorScale(arc_pay) : "#F2F2F2"
                     }
                     onMouseEnter={() => {
-                      setTooltipContent(found ? `ARC-CO Adjusted Payment Rate: $${arc_pay.toFixed(2)}` : "No Data");
+                      let content = "";
+
+                      if (found) {
+                        content = `
+                        County: ${g.properties.name}, 
+                        ${cur.state}<br/>
+                        Crop: ${cur.crop}<br/>
+                        ARC-CO Adjusted Payment Rate: $${arc_pay.toFixed(2)}
+                        `;
+                      }
+
+                      setTooltipContent(content);
                     }}
                     onMouseLeave={() => {
                       setTooltipContent("");
                     }}
-                    stroke={found && arc_pay > 0 ? "#000" : "#FFF"}
+                    stroke={found && arc_pay >= 0 ? "#000" : "#FFF"}
                     style={{
                       default: {
                         fill:
-                          found && arc_pay > 0
+                          found && arc_pay >= 0
                             ? colorScale(arc_pay)
                             : "#F2F2F2",
                         stroke:
-                          found && arc_pay > 0 ? "#000" : "rgb(72, 72, 72)",
-                        strokeWidth: found && arc_pay > 0 ? 0.5 : 0.1,
+                          found && arc_pay >= 0 ? "#000" : "rgb(72, 72, 72)",
+                        strokeWidth: found && arc_pay >= 0 ? 0.5 : 0.1,
                         outline: "none",
                       },
                       hover: {
