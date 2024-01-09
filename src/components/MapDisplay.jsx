@@ -1,3 +1,4 @@
+import { renderToStaticMarkup } from "react-dom/server";
 import { useEffect, useState, memo } from "react";
 import {
   ComposableMap,
@@ -26,12 +27,9 @@ const colorScale = scaleQuantize()
     "#184E77",
   ]);
 
-const MapDisplay = ({
-  year,
-  crop,
-  state,
-  setTooltipContent,
-}) => {
+const benchmark_ratio = 0.86;
+
+const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
   const [data, setData] = useState([]);
   const [stateGeo, setStateGeo] = useState([]);
   const [geo, setGeo] = useState([]);
@@ -40,12 +38,24 @@ const MapDisplay = ({
   const [center, setCenter] = useState([-96, 37.8]);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [stateGeoData, setStateGeoData] = useState([]);
-  const benchmark_ratio = 0.86;
 
-  const debounceTooltip = debounce((content) => {
-    console.log("Mouse Enter County debounced.");
-    setTooltipContent(content);
-  }, 500);
+  const updateTooltip = ({ countyName, arcPay }) => {
+    let content = (
+      <div className="tooltip-container">
+        <div className="tooltip-header">{countyName}</div>
+        <div className="tooltip-body">
+          <p className="year">
+            <b>Year:</b> {year}
+          </p>
+          <p className="payment">
+            <b>ARC-CO Adjusted Payment Rate: </b>
+            {arcPay}
+          </p>
+        </div>
+      </div>
+    );
+    setTooltipContent(renderToStaticMarkup(content));
+  };
 
   useEffect(() => {
     json("json/counties-10m.json").then((data) => {
@@ -164,18 +174,12 @@ const MapDisplay = ({
                       found && arc_pay >= 0 ? colorScale(arc_pay) : "#F2F2F2"
                     }
                     onMouseEnter={() => {
-                      let content = "";
-
                       if (found) {
-                        content = `
-                        County: ${g.properties.name}, 
-                        ${cur.state}<br/>
-                        Crop: ${cur.crop}<br/>
-                        ARC-CO Adjusted Payment Rate: $${arc_pay.toFixed(2)}
-                        `;
+                        updateTooltip({
+                          countyName: g.properties.name,
+                          arcPay: `$${arc_pay.toFixed(2)}`,
+                        });
                       }
-
-                      setTooltipContent(content);
                     }}
                     onMouseLeave={() => {
                       setTooltipContent("");
@@ -189,19 +193,17 @@ const MapDisplay = ({
                             : "#F2F2F2",
                         stroke:
                           found && arc_pay >= 0 ? "#000" : "rgb(72, 72, 72)",
-                        strokeWidth: found && arc_pay >= 0 ? 0.5 : 0.1,
+                        strokeWidth: found && arc_pay >= 0 ? 0.2 : 0.2,
                         outline: "none",
                       },
                       hover: {
-                        fill: "#000",
                         stroke: "#000",
-                        strokeWidth: 1,
+                        strokeWidth: .5,
                         outline: "none",
                       },
                       pressed: {
-                        fill: "yellow",
                         stroke: "#000",
-                        strokeWidth: 1,
+                        strokeWidth: .5,
                         outline: "none",
                       },
                     }}
