@@ -1,18 +1,14 @@
 import { useEffect, useState, memo } from "react";
-import { Tooltip } from "react-tooltip";
 import {
   ComposableMap,
   Geographies,
   Geography,
-  Marker,
-  Annotation,
   ZoomableGroup,
 } from "react-simple-maps";
 import { scaleQuantize } from "d3-scale";
 import { csv, json } from "d3-fetch";
 import { geoCentroid } from "d3-geo";
 import { debounce } from "lodash";
-
 import allStates from "../data/allstates.json";
 
 const colorScale = scaleQuantize()
@@ -30,25 +26,10 @@ const colorScale = scaleQuantize()
     "#184E77",
   ]);
 
-const offsets = {
-  VT: [50, -8],
-  NH: [34, 2],
-  MA: [30, -1],
-  RI: [28, 2],
-  CT: [35, 10],
-  NJ: [34, 1],
-  DE: [33, 0],
-  MD: [47, 10],
-  DC: [49, 21],
-};
-
 const MapDisplay = ({
   year,
   crop,
   state,
-  cropTypes,
-  tooltipContent,
-  setCropTypes,
   setTooltipContent,
 }) => {
   const [data, setData] = useState([]);
@@ -76,7 +57,7 @@ const MapDisplay = ({
   useEffect(() => {
     json("json/states-10m.json").then((data) => {
       setStateGeo(data);
-      console.log("Geo state data loaded!", data);
+      console.log("Geo state data loaded!");
     });
   }, []);
 
