@@ -10,7 +10,8 @@
     "build-pages": "vite build --base=/policy-design-lab/",
     "geofilter": "node ./scripts/geofilter.js",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "bundle-viz": "vite-bundle-visualizer"
   },
   "dependencies": {
     "d3-fetch": "^3.0.1",
@@ -36,7 +37,8 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "vite": "^5.0.8"
+    "vite": "^5.0.8",
+    "vite-bundle-visualizer": "^1.0.0"
   },
   "browserslist": [
     "last 2 versions"

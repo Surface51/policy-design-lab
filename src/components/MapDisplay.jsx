@@ -9,7 +9,6 @@ import {
 import { scaleQuantize } from "d3-scale";
 import { csv, json } from "d3-fetch";
 import { geoCentroid } from "d3-geo";
-import { debounce } from "lodash";
 import allStates from "../data/allstates.json";
 
 const colorScale = scaleQuantize()
@@ -39,19 +38,23 @@ const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
   const [zoomLevel, setZoomLevel] = useState(1);
   const [stateGeoData, setStateGeoData] = useState([]);
 
-  const updateTooltip = ({ countyName, arcPay }) => {
+  const updateTooltip = ({ countyName, arcPay, dataPresent }) => {
     let content = (
       <div className="tooltip-container">
         <div className="tooltip-header">{countyName}</div>
-        <div className="tooltip-body">
-          <p className="year">
-            <b>Year:</b> {year}
-          </p>
-          <p className="payment">
-            <b>ARC-CO Adjusted Payment Rate: </b>
-            {arcPay}
-          </p>
-        </div>
+        {dataPresent ? (
+          <div className="tooltip-body">
+            <p className="year">
+              <b>Year:</b> {year}
+            </p>
+            <p className="payment">
+              <b>ARC-CO Adjusted Payment Rate: </b>
+              {arcPay}
+            </p>
+          </div>
+        ) : (
+          <div className="tooltip-body">No Data Available</div>
+        )}
       </div>
     );
     setTooltipContent(renderToStaticMarkup(content));
@@ -149,7 +152,7 @@ const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
                 let arc_pay = null;
                 let found = false;
 
-                if (cur) {
+                if (cur && cur.crop === crop) {
                   if (cur.crop !== crop) {
                     found = false;
                   } else {
@@ -178,6 +181,13 @@ const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
                         updateTooltip({
                           countyName: g.properties.name,
                           arcPay: `$${arc_pay.toFixed(2)}`,
+                          dataPresent: true,
+                        });
+                      } else {
+                        updateTooltip({
+                          countyName: g.properties.name,
+                          arcPay: "N/A",
+                          dataPresent: false,
                         });
                       }
                     }}
@@ -198,12 +208,12 @@ const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
                       },
                       hover: {
                         stroke: "#000",
-                        strokeWidth: .5,
+                        strokeWidth: 0.5,
                         outline: "none",
                       },
                       pressed: {
                         stroke: "#000",
-                        strokeWidth: .5,
+                        strokeWidth: 0.5,
                         outline: "none",
                       },
                     }}
