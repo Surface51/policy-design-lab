@@ -32,6 +32,7 @@ const Map = () => {
         crop={crop}
         setStateTypes={setStateTypes}
         setCropTypes={setCropTypes}
+        setState={setState}
         state={state}
         year={year}
         setTooltipContent={setTooltipContent}

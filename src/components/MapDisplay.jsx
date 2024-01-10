@@ -28,7 +28,7 @@ const colorScale = scaleQuantize()
 
 const benchmark_ratio = 0.86;
 
-const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
+const MapDisplay = ({ year, crop, state, setState, setTooltipContent }) => {
   const [data, setData] = useState([]);
   const [stateGeo, setStateGeo] = useState([]);
   const [geo, setGeo] = useState([]);
@@ -135,6 +135,22 @@ const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
 
   return (
     <div data-tip="" data-html={true}>
+      <div className="btn-group">
+        <button
+          className="btn btn-zoom-out"
+          onClick={() => setZoomLevel(zoomLevel - 0.5)}
+          disabled={zoomLevel <= 1}
+        >
+          <div className="sr-only">Zoom Out</div>
+        </button>
+        <button
+          className="btn btn-zoom-in"
+          onClick={() => setZoomLevel(zoomLevel + 0.5)}
+          disabled={zoomLevel >= 3}
+        >
+          <div className="sr-only">Zoom In</div>
+        </button>
+      </div>
       <ComposableMap projection="geoAlbersUsa" className="map-display">
         <ZoomableGroup
           center={center}
@@ -163,8 +179,6 @@ const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
                     const form = Math.max(guarantee - act_rev, 0);
                     arc_pay = Math.min(max_pay, form);
                     found = true;
-                    // const state = g.id.substring(0, 2);
-                    // Relavent Fips Codes | IL - 17 | IA - 19
                   }
                 }
 
@@ -177,46 +191,83 @@ const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
                       found && arc_pay >= 0 ? colorScale(arc_pay) : "#F2F2F2"
                     }
                     onMouseEnter={() => {
-                      if (found) {
-                        updateTooltip({
-                          countyName: g.properties.name,
-                          arcPay: `$${arc_pay.toFixed(2)}`,
-                          dataPresent: true,
-                        });
-                      } else {
-                        updateTooltip({
-                          countyName: g.properties.name,
-                          arcPay: "N/A",
-                          dataPresent: false,
-                        });
+                      if (
+                        state === "all" ||
+                        allStates.some(
+                          (s) =>
+                            s.id === state && s.val == Math.floor(g.id / 1000)
+                        )
+                      ) {
+                        updateTooltip(
+                          found
+                            ? {
+                                countyName: g.properties.name,
+                                arcPay: `$${arc_pay.toFixed(2)}`,
+                                dataPresent: true,
+                              }
+                            : {
+                                countyName: g.properties.name,
+                                arcPay: "N/A",
+                                dataPresent: false,
+                              }
+                        );
                       }
                     }}
                     onMouseLeave={() => {
                       setTooltipContent("");
                     }}
                     stroke={found && arc_pay >= 0 ? "#000" : "#FFF"}
-                    style={{
-                      default: {
-                        fill:
-                          found && arc_pay >= 0
-                            ? colorScale(arc_pay)
-                            : "#F2F2F2",
-                        stroke:
-                          found && arc_pay >= 0 ? "#000" : "rgb(72, 72, 72)",
-                        strokeWidth: found && arc_pay >= 0 ? 0.2 : 0.2,
-                        outline: "none",
-                      },
-                      hover: {
-                        stroke: "#000",
-                        strokeWidth: 0.5,
-                        outline: "none",
-                      },
-                      pressed: {
-                        stroke: "#000",
-                        strokeWidth: 0.5,
-                        outline: "none",
-                      },
-                    }}
+                    style={
+                      state === "all" ||
+                      allStates.some(
+                        (s) =>
+                          s.id === state && s.val == Math.floor(g.id / 1000)
+                      )
+                        ? {
+                            default: {
+                              fill:
+                                found && arc_pay >= 0
+                                  ? colorScale(arc_pay)
+                                  : "#F2F2F2",
+                              stroke:
+                                found && arc_pay >= 0
+                                  ? "#000"
+                                  : "rgb(72, 72, 72)",
+                              strokeWidth: found && arc_pay >= 0 ? 0.2 : 0.2,
+                              outline: "none",
+                            },
+                            hover: {
+                              stroke: "#000",
+                              strokeWidth: 0.5,
+                              outline: "none",
+                            },
+                            pressed: {
+                              stroke: "#000",
+                              strokeWidth: 0.5,
+                              outline: "none",
+                            },
+                          }
+                        : {
+                            default: {
+                              fill: "transparent",
+                              stroke: "transparent",
+                              strokeWidth: 0.1,
+                              outline: "none",
+                            },
+                            hover: {
+                              fill: "transparent",
+                              stroke: "transparent",
+                              strokeWidth: 0.5,
+                              outline: "none",
+                            },
+                            pressed: {
+                              fill: "transparent",
+                              stroke: "transparent",
+                              strokeWidth: 0.5,
+                              outline: "none",
+                            },
+                          }
+                    }
                   />
                 );
               });

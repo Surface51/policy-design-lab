@@ -1,15 +1,82 @@
-.map-display {
-    .county {
-        transition: fill .3s;
-    }
-}
-
 .map-container {
     position: relative;
 
     .map-display {
         max-height: 80vh;
         width     : 100%;
+
+        .county {
+            transition: fill .3s;
+        }
+    }
+
+
+    .btn-group {
+        padding        : 8px 0 16px;
+        display        : flex;
+        justify-content: center;
+        align-items    : center;
+        gap            : 1rem;
+
+        .btn {
+            position     : relative;
+            width        : 40px;
+            height       : 40px;
+            border-radius: 50%;
+            background   : $primary;
+            transition   : background .3s, box-shadow .3s;
+            color        : white;
+            font-size    : 20px;
+            outline      : none;
+            border       : none;
+
+            &:hover {
+                background: $accent;
+                box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+                cursor    : pointer;
+            }
+
+            &.btn-zoom-out::after {
+                content   : '';
+                position  : absolute;
+                width     : 50%;
+                height    : 2px;
+                background: white;
+                left      : 25%;
+                top       : calc(50% - 1px);
+            }
+
+            &.btn-zoom-in::after {
+                content   : '';
+                position  : absolute;
+                width     : 50%;
+                height    : 2px;
+                background: white;
+                left      : 25%;
+                top       : calc(50% - 1px);
+            }
+
+            &.btn-zoom-in::before {
+                content   : '';
+                position  : absolute;
+                width     : 2px;
+                height    : 50%;
+                background: white;
+                left      : calc(50% - 1px);
+                top       : 25%;
+            }
+
+            &[disabled] {
+                background: lightslategrey;
+                color     : black;
+                cursor    : not-allowed;
+
+                &:hover {
+                    background: lightslategrey;
+                    box-shadow: none;
+                }
+            }
+        }
     }
 
     .__react_component_tooltip {
@@ -21,7 +88,7 @@
         font-weight     : 400;
         box-shadow      : 0 0 10px rgba(0, 0, 0, .5);
         opacity         : 1;
-        max-width       : 300px;
+        max-width       : min(300px, 40vw);
 
         .tooltip-container>* {
             padding-inline: 1rem;
@@ -58,6 +125,10 @@
 
         &::after {
             border-top-color: $primary !important;
+        }
+
+        @media screen and (max-width: 600px) {
+            font-size: 1rem;
         }
     }
 }
