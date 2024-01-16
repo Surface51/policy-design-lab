@@ -10,6 +10,10 @@
         }
     }
 
+    .map-wrapper {
+        position: relative;
+    }
+
 
     .btn-group {
         padding        : 8px 0 16px;
@@ -129,6 +133,17 @@
 
         @media screen and (max-width: 600px) {
             font-size: 1rem;
+        }
+    }
+
+    .key {
+        .key-colors {
+            position        : absolute;
+            left            : 0;
+            top             : 0;
+            width           : 20px;
+            height          : 100%;
+            background-image: linear-gradient(to bottom, #D9ED92, #B5E48C, #99D98C, #76C893, #52B69A, #34A0A4, #168AAD, #1A759F, #1E6091, #184E77)
         }
     }
 }

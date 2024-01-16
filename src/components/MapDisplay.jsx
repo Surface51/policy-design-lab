@@ -134,7 +134,11 @@ const MapDisplay = ({ year, crop, state, setState, setTooltipContent }) => {
   }, [stateGeoData, state]);
 
   return (
-    <div data-tip="" data-html={true}>
+    <div data-tip="" data-html={true} className="map-wrapper">
+      <div className="key">
+        <div className="key-title">ARC-CO Adjusted Payment Rate</div>
+        <div className="key-colors"></div>
+      </div>
       <div className="btn-group">
         <button
           className="btn btn-zoom-out"
