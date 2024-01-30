@@ -2,11 +2,17 @@
     position: relative;
 
     .map-display {
-        max-height: 80vh;
-        width     : 100%;
+        max-height  : 80vh;
+        width       : 100%;
+        padding-left: 140px;
 
         .county {
             transition: fill .3s;
+        }
+
+        @media screen and (max-width: 768px) {
+            padding-bottom: 150px;
+            padding-left  : 0;
         }
     }
 
@@ -146,4 +152,5 @@
             background-image: linear-gradient(to bottom, #D9ED92, #B5E48C, #99D98C, #76C893, #52B69A, #34A0A4, #168AAD, #1A759F, #1E6091, #184E77)
         }
     }
+
 }

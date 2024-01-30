@@ -1,0 +1,35 @@
+.color-key-container {
+    position     : absolute;
+    left         : 0;
+    top          : 0;
+    width        : 140px;
+    padding      : .5rem;
+    border       : 2px solid $primary;
+    border-radius: 5px;
+    background   : rgba(255, 255, 255, .8);
+}
+
+.color-key {
+    display       : flex;
+    flex-direction: column;
+}
+
+
+/* Responsive layout for mobile devices */
+@media (max-width: 768px) {
+    .color-key {
+        flex-direction: row;
+        width         : 100% !important;
+        overflow-x    : auto;
+    }
+
+    .color-key-container {
+        top   : auto;
+        bottom: 0;
+        width : 100%;
+    }
+
+    .color-box {
+        height: 80px !important;
+    }
+}

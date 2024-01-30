@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Geography } from "react-simple-maps";
 import { scaleQuantize } from "d3-scale";
@@ -21,7 +20,7 @@ const colorScale = scaleQuantize()
 
 const benchmark_ratio = 0.86;
 
-const County = ({ countyGeoData, setTooltipContent, data, crop, state }) => {
+const County = ({ countyGeoData, setTooltipContent, data, crop, state, year }) => {
   const updateTooltip = ({ countyName, arcPay, dataPresent }) => {
     let content = (
       <div className="tooltip-container">
@@ -144,4 +143,4 @@ const County = ({ countyGeoData, setTooltipContent, data, crop, state }) => {
   );
 };
 
-export default memo(County);
+export default County;

@@ -1,9 +1,5 @@
 import { useEffect, useState, memo } from "react";
-import {
-  ComposableMap,
-  Geographies,
-  ZoomableGroup,
-} from "react-simple-maps";
+import { ComposableMap, Geographies, ZoomableGroup } from "react-simple-maps";
 import { csv, json } from "d3-fetch";
 import { geoCentroid } from "d3-geo";
 
@@ -13,6 +9,7 @@ import allStates from "../data/allstates.json";
 // Custom components
 import County from "./County";
 import State from "./State";
+import ColorKey from "./ColorKey";
 
 const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
   const [data, setData] = useState([]);
@@ -99,10 +96,7 @@ const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
 
   return (
     <div data-tip="" data-html={true} className="map-wrapper">
-      <div className="key">
-        <div className="key-title">ARC-CO Adjusted Payment Rate</div>
-        <div className="key-colors"></div>
-      </div>
+      <ColorKey title={"ARC-CO Adjusted Payment Rate"} />
       <div className="btn-group">
         <button
           className="btn btn-zoom-out"
@@ -138,6 +132,7 @@ const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
                     data={data}
                     crop={crop}
                     state={state}
+                    year={year}
                   />
                 );
               });
@@ -149,9 +144,7 @@ const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
           >
             {({ geographies }) => {
               setStateGeoData(geographies);
-              return geographies.map((geo) => (
-                <State stateGeoData={geo} />
-              ));
+              return geographies.map((geo) => <State stateGeoData={geo} />);
             }}
           </Geographies>
         </ZoomableGroup>
