@@ -1,34 +1,20 @@
-import { renderToStaticMarkup } from "react-dom/server";
 import { useEffect, useState, memo } from "react";
 import {
   ComposableMap,
   Geographies,
-  Geography,
   ZoomableGroup,
 } from "react-simple-maps";
-import { scaleQuantize } from "d3-scale";
 import { csv, json } from "d3-fetch";
 import { geoCentroid } from "d3-geo";
+
+// State data for fetching fips codes
 import allStates from "../data/allstates.json";
 
-const colorScale = scaleQuantize()
-  .domain([0, 100])
-  .range([
-    "#D9ED92",
-    "#B5E48C",
-    "#99D98C",
-    "#76C893",
-    "#52B69A",
-    "#34A0A4",
-    "#168AAD",
-    "#1A759F",
-    "#1E6091",
-    "#184E77",
-  ]);
+// Custom components
+import County from "./County";
+import State from "./State";
 
-const benchmark_ratio = 0.86;
-
-const MapDisplay = ({ year, crop, state, setState, setTooltipContent }) => {
+const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
   const [data, setData] = useState([]);
   const [stateGeo, setStateGeo] = useState([]);
   const [geo, setGeo] = useState([]);
@@ -37,28 +23,6 @@ const MapDisplay = ({ year, crop, state, setState, setTooltipContent }) => {
   const [center, setCenter] = useState([-96, 37.8]);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [stateGeoData, setStateGeoData] = useState([]);
-
-  const updateTooltip = ({ countyName, arcPay, dataPresent }) => {
-    let content = (
-      <div className="tooltip-container">
-        <div className="tooltip-header">{countyName}</div>
-        {dataPresent ? (
-          <div className="tooltip-body">
-            <p className="year">
-              <b>Year:</b> {year}
-            </p>
-            <p className="payment">
-              <b>ARC-CO Adjusted Payment Rate: </b>
-              {arcPay}
-            </p>
-          </div>
-        ) : (
-          <div className="tooltip-body">No Data Available</div>
-        )}
-      </div>
-    );
-    setTooltipContent(renderToStaticMarkup(content));
-  };
 
   useEffect(() => {
     json("json/counties-10m.json").then((data) => {
@@ -167,111 +131,13 @@ const MapDisplay = ({ year, crop, state, setState, setTooltipContent }) => {
           <Geographies geography={geo} borders={"#fff"}>
             {({ geographies }) => {
               return geographies.map((g) => {
-                const cur = data.find((s) => s.fips === g.id);
-
-                let arc_pay = null;
-                let found = false;
-
-                if (cur && cur.crop === crop) {
-                  if (cur.crop !== crop) {
-                    found = false;
-                  } else {
-                    const benchmark_rev = cur.bchmk * cur.bchmk_prc;
-                    const guarantee = benchmark_rev * benchmark_ratio;
-                    const max_pay = benchmark_rev * 0.1;
-                    const act_rev = cur.act_yld * cur.nat_prc;
-                    const form = Math.max(guarantee - act_rev, 0);
-                    arc_pay = Math.min(max_pay, form);
-                    found = true;
-                  }
-                }
-
                 return (
-                  <Geography
-                    key={g.rsmKey}
-                    className="county"
-                    geography={g}
-                    fill={
-                      found && arc_pay >= 0 ? colorScale(arc_pay) : "#F2F2F2"
-                    }
-                    onMouseEnter={() => {
-                      if (
-                        state === "all" ||
-                        allStates.some(
-                          (s) =>
-                            s.id === state && s.val == Math.floor(g.id / 1000)
-                        )
-                      ) {
-                        updateTooltip(
-                          found
-                            ? {
-                                countyName: g.properties.name,
-                                arcPay: `$${arc_pay.toFixed(2)}`,
-                                dataPresent: true,
-                              }
-                            : {
-                                countyName: g.properties.name,
-                                arcPay: "N/A",
-                                dataPresent: false,
-                              }
-                        );
-                      }
-                    }}
-                    onMouseLeave={() => {
-                      setTooltipContent("");
-                    }}
-                    stroke={found && arc_pay >= 0 ? "#000" : "#FFF"}
-                    style={
-                      state === "all" ||
-                      allStates.some(
-                        (s) =>
-                          s.id === state && s.val == Math.floor(g.id / 1000)
-                      )
-                        ? {
-                            default: {
-                              fill:
-                                found && arc_pay >= 0
-                                  ? colorScale(arc_pay)
-                                  : "#F2F2F2",
-                              stroke:
-                                found && arc_pay >= 0
-                                  ? "#000"
-                                  : "rgb(72, 72, 72)",
-                              strokeWidth: found && arc_pay >= 0 ? 0.2 : 0.2,
-                              outline: "none",
-                            },
-                            hover: {
-                              stroke: "#000",
-                              strokeWidth: 0.5,
-                              outline: "none",
-                            },
-                            pressed: {
-                              stroke: "#000",
-                              strokeWidth: 0.5,
-                              outline: "none",
-                            },
-                          }
-                        : {
-                            default: {
-                              fill: "transparent",
-                              stroke: "transparent",
-                              strokeWidth: 0.1,
-                              outline: "none",
-                            },
-                            hover: {
-                              fill: "transparent",
-                              stroke: "transparent",
-                              strokeWidth: 0.5,
-                              outline: "none",
-                            },
-                            pressed: {
-                              fill: "transparent",
-                              stroke: "transparent",
-                              strokeWidth: 0.5,
-                              outline: "none",
-                            },
-                          }
-                    }
+                  <County
+                    countyGeoData={g}
+                    setTooltipContent={setTooltipContent}
+                    data={data}
+                    crop={crop}
+                    state={state}
                   />
                 );
               });
@@ -283,36 +149,9 @@ const MapDisplay = ({ year, crop, state, setState, setTooltipContent }) => {
           >
             {({ geographies }) => {
               setStateGeoData(geographies);
-              return (
-                <>
-                  {geographies.map((geo) => (
-                    <Geography
-                      key={geo.rsmKey}
-                      geography={geo}
-                      className="state"
-                      style={{
-                        default: {
-                          fill: "transparent",
-                          stroke: "#000",
-                          strokeWidth: 0.75,
-                          outline: "none",
-                        },
-                        hover: {
-                          fill: "#000",
-                          fillOpacity: 0.2,
-                          stroke: "#000",
-                          strokeWidth: 0.75,
-                          outline: "none",
-                        },
-                        pressed: {
-                          fill: "#000",
-                          outline: "none",
-                        },
-                      }}
-                    />
-                  ))}
-                </>
-              );
+              return geographies.map((geo) => (
+                <State stateGeoData={geo} />
+              ));
             }}
           </Geographies>
         </ZoomableGroup>
