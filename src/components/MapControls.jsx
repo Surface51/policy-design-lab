@@ -159,7 +159,7 @@ const MapControls = ({ crop, setCrop, setState, setYear, state, year }) => {
         <div className="input-label">STATE</div>
         <Select
           options={stateOptions}
-          values={[stateOptions[0]]}
+          values={[{ value: state, label: stateOptions.find((s) => s.value === state).label}]}
           onChange={(value) => {
             setState(value[0].value);
           }}

@@ -34,7 +34,7 @@
             height       : 40px;
             border-radius: 50%;
             background   : $primary;
-            transition   : background .3s, box-shadow .3s;
+            transition   : background .3s, box-shadow .3s, opacity .3s;
             color        : white;
             font-size    : 20px;
             outline      : none;
@@ -44,6 +44,14 @@
                 background: $accent;
                 box-shadow: 0 0 10px rgba(0, 0, 0, .5);
                 cursor    : pointer;
+            }
+
+            &.btn-exit-state {
+                // warning color background, darker
+                background: #ff4545;
+                &:hover {
+                    opacity: .8;
+                }
             }
 
             &.btn-zoom-out::after {
@@ -56,6 +64,7 @@
                 top       : calc(50% - 1px);
             }
 
+            &.btn-exit-state::after,
             &.btn-zoom-in::after {
                 content   : '';
                 position  : absolute;
@@ -66,6 +75,7 @@
                 top       : calc(50% - 1px);
             }
 
+            &.btn-exit-state::before,
             &.btn-zoom-in::before {
                 content   : '';
                 position  : absolute;
@@ -74,6 +84,11 @@
                 background: white;
                 left      : calc(50% - 1px);
                 top       : 25%;
+            }
+
+            &.btn-exit-state::after,
+            &.btn-exit-state::before {
+                transform: rotate(45deg);
             }
 
             &[disabled] {

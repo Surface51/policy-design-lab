@@ -20,7 +20,14 @@ const colorScale = scaleQuantize()
 
 const benchmark_ratio = 0.86;
 
-const County = ({ countyGeoData, setTooltipContent, data, crop, state, year }) => {
+const County = ({
+  countyGeoData,
+  setTooltipContent,
+  data,
+  crop,
+  state,
+  year,
+}) => {
   const updateTooltip = ({ countyName, arcPay, dataPresent }) => {
     let content = (
       <div className="tooltip-container">
@@ -43,23 +50,20 @@ const County = ({ countyGeoData, setTooltipContent, data, crop, state, year }) =
     setTooltipContent(renderToStaticMarkup(content));
   };
 
-  const cur = data.find((s) => s.fips === countyGeoData.id);
+  const cur = data[`${countyGeoData.id}-${crop}`];
 
   let arc_pay = null;
   let found = false;
 
   if (cur && cur.crop === crop) {
-    if (cur.crop !== crop) {
-      found = false;
-    } else {
-      const benchmark_rev = cur.bchmk * cur.bchmk_prc;
-      const guarantee = benchmark_rev * benchmark_ratio;
-      const max_pay = benchmark_rev * 0.1;
-      const act_rev = cur.act_yld * cur.nat_prc;
-      const form = Math.max(guarantee - act_rev, 0);
-      arc_pay = Math.min(max_pay, form);
-      found = true;
-    }
+    // console.log(cur);
+    const benchmark_rev = cur.bchmk * cur.bchmk_prc;
+    const guarantee = benchmark_rev * benchmark_ratio;
+    const max_pay = benchmark_rev * 0.1;
+    const act_rev = cur.act_yld * cur.nat_prc;
+    const form = Math.max(guarantee - act_rev, 0);
+    arc_pay = Math.min(max_pay, form);
+    found = true;
   }
 
   return (

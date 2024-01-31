@@ -11,7 +11,7 @@ import County from "./County";
 import State from "./State";
 import ColorKey from "./ColorKey";
 
-const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
+const MapDisplay = ({ year, crop, state, setState, setTooltipContent }) => {
   const [data, setData] = useState([]);
   const [stateGeo, setStateGeo] = useState([]);
   const [geo, setGeo] = useState([]);
@@ -39,7 +39,11 @@ const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
     const years = [2014, 2015, 2016, 2017, 2018, 2019, 2020];
     const promises = years.map((year) =>
       csv(`csv/all_${year}.csv`).then((data) => {
-        return data;
+        return data.reduce((acc, row) => {
+            // Use the 'fips' field as the key
+            acc[`${row.fips}-${row.crop}`] = row;
+            return acc;
+        }, {});
       })
     );
     Promise.all(promises).then((results) => {
@@ -102,6 +106,7 @@ const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
           className="btn btn-zoom-out"
           onClick={() => setZoomLevel(zoomLevel - 0.5)}
           disabled={zoomLevel <= 1}
+          title="Zoom Out"
         >
           <div className="sr-only">Zoom Out</div>
         </button>
@@ -109,9 +114,22 @@ const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
           className="btn btn-zoom-in"
           onClick={() => setZoomLevel(zoomLevel + 0.5)}
           disabled={zoomLevel >= 3}
+          title="Zoom In"
         >
           <div className="sr-only">Zoom In</div>
         </button>
+        {state !== "all" && (
+          <button
+            className="btn btn-exit-state"
+            onClick={() => {
+              setState("all");
+            }}
+            disabled={state === "all"}
+            title="Exit State"
+          >
+            <div className="sr-only">Stop</div>
+          </button>
+        )}
       </div>
       <ComposableMap projection="geoAlbersUsa" className="map-display">
         <ZoomableGroup
@@ -133,6 +151,7 @@ const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
                     crop={crop}
                     state={state}
                     year={year}
+                    key={g.rsmKey}
                   />
                 );
               });
@@ -144,7 +163,7 @@ const MapDisplay = ({ year, crop, state, setTooltipContent }) => {
           >
             {({ geographies }) => {
               setStateGeoData(geographies);
-              return geographies.map((geo) => <State stateGeoData={geo} />);
+              return geographies.map((geo) => <State stateGeoData={geo} setState={setState}/>);
             }}
           </Geographies>
         </ZoomableGroup>

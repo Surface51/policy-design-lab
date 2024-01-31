@@ -8,12 +8,8 @@ const Map = () => {
   const [cropTypes, setCropTypes] = useState([]);
   const [crop, setCrop] = useState("");
   const [stateTypes, setStateTypes] = useState([]);
-  const [state, setState] = useState("");
+  const [state, setState] = useState("all");
   const [tooltipContent, setTooltipContent] = useState("");
-
-  useEffect(() => {
-    setState("all");
-  }, []);
 
   return (
     <section className="map-container container">
@@ -33,6 +29,7 @@ const Map = () => {
         setStateTypes={setStateTypes}
         setCropTypes={setCropTypes}
         state={state}
+        setState={setState}
         year={year}
         setTooltipContent={setTooltipContent}
       />

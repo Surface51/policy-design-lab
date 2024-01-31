@@ -69,7 +69,7 @@ ColorKey.defaultProps = {
     { hex: "#168AAD", label: "$60 - $70", fontColor: "inherit" },
     { hex: "#1A759F", label: "$70 - $80", fontColor: "#FFF" },
     { hex: "#1E6091", label: "$80 - $90", fontColor: "#FFF" },
-    { hex: "#184E77", label: "$90 - $100", fontColor: "#FFF" },
+    { hex: "#184E77", label: "$90 - $100+", fontColor: "#FFF" },
   ],
   width: 150,
   height: 30,
