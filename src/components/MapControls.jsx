@@ -4,14 +4,22 @@ import "rc-slider/assets/index.css";
 
 import Select from "react-dropdown-select";
 
-const MapControls = ({ crop, setCrop, setState, setYear, state, year }) => {
+const MapControls = ({
+  crop,
+  setCrop,
+  setCropImageName,
+  setState,
+  setYear,
+  state,
+  year,
+}) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const cropOptions = [
     { label: "Barley", value: "Barley" },
     { label: "Canola", value: "Canola" },
-    { label: "Chickpeas_Large", value: "Chickpeas_Large" },
-    { label: "Chickpeas_Small", value: "Chickpeas_Small" },
+    { label: "Chickpeas Large", value: "Chickpeas_Large" },
+    { label: "Chickpeas Small", value: "Chickpeas_Small" },
     { label: "Corn", value: "Corn" },
     { label: "Crambe", value: "Crambe" },
     { label: "Dry Peas", value: "Dry Peas" },
@@ -22,9 +30,9 @@ const MapControls = ({ crop, setCrop, setState, setYear, state, year }) => {
     { label: "Oats", value: "Oats" },
     { label: "Peanuts", value: "Peanuts" },
     { label: "Rapeseed", value: "Rapeseed" },
-    { label: "Rice_Long Grain", value: "Rice_Long Grain" },
-    { label: "Rice_Med/Short Grain", value: "Rice_Med/Short Grain" },
-    { label: "Rice_Temperate Japonica", value: "Rice_Temperate Japonica" },
+    { label: "Long grain rice", value: "Rice_Long Grain" },
+    { label: "Short grain rice", value: "Rice_Med/Short Grain" },
+    { label: "Temperate Rice", value: "Rice_Temperate Japonica" },
     { label: "Safflower", value: "Safflower" },
     { label: "Seed Cotton", value: "Seed Cotton" },
     { label: "Sesame Seed", value: "Sesame Seed" },
@@ -121,6 +129,10 @@ const MapControls = ({ crop, setCrop, setState, setYear, state, year }) => {
     setCrop(cropOptions[4].value);
   }, []);
 
+  useEffect(() => {
+    setCropImageName(crop);
+  }, [crop]);
+
   return (
     <div className="controls-container">
       <div className="input-group play-controls">
@@ -159,7 +171,12 @@ const MapControls = ({ crop, setCrop, setState, setYear, state, year }) => {
         <div className="input-label">STATE</div>
         <Select
           options={stateOptions}
-          values={[{ value: state, label: stateOptions.find((s) => s.value === state).label}]}
+          values={[
+            {
+              value: state,
+              label: stateOptions.find((s) => s.value === state).label,
+            },
+          ]}
           onChange={(value) => {
             setState(value[0].value);
           }}

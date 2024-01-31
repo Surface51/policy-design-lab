@@ -3,7 +3,7 @@ import MapControls from "./MapControls";
 import MapDisplay from "./MapDisplay";
 import ReactToolTip from "react-tooltip";
 
-const Map = () => {
+const Map = ({ setCropImageName }) => {
   const [year, setYear] = useState(2014);
   const [cropTypes, setCropTypes] = useState([]);
   const [crop, setCrop] = useState("");
@@ -21,6 +21,7 @@ const Map = () => {
         setYear={setYear}
         state={state}
         stateTypes={stateTypes}
+        setCropImageName={setCropImageName}
         year={year}
       />
       <hr />
