@@ -53,16 +53,22 @@ const County = ({
   const cur = data[`${countyGeoData.id}-${crop}`];
 
   let arc_pay = null;
+  let new_arc_pay = null;
+  let adj_arc_pay = null;
   let found = false;
 
   if (cur && cur.crop === crop) {
-    // console.log(cur);
-    const benchmark_rev = cur.bchmk * cur.bchmk_prc;
-    const guarantee = benchmark_rev * benchmark_ratio;
-    const max_pay = benchmark_rev * 0.1;
-    const act_rev = cur.act_yld * cur.nat_prc;
-    const form = Math.max(guarantee - act_rev, 0);
-    arc_pay = Math.min(max_pay, form);
+    // const benchmark_rev = cur.bchmk * cur.bchmk_prc;
+    // const guarantee = benchmark_rev * benchmark_ratio;
+    // const max_pay = benchmark_rev * 0.1;
+    // const act_rev = cur.act_yld * cur.nat_prc;
+    // const form = Math.max(guarantee - act_rev, 0);
+    // arc_pay = Math.min(max_pay, form);
+
+    arc_pay = Number(cur.arc_pay).toFixed(2)
+    new_arc_pay = Number(cur.new_arc_pay).toFixed(2)
+    adj_arc_pay = Number(cur.adj_arc_pay).toFixed(2)
+
     found = true;
   }
 
@@ -84,7 +90,7 @@ const County = ({
             found
               ? {
                   countyName: countyGeoData.properties.name,
-                  arcPay: `$${arc_pay.toFixed(2)}`,
+                  arcPay: `$${arc_pay}`,
                   dataPresent: true,
                 }
               : {

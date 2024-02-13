@@ -38,7 +38,7 @@ const MapDisplay = ({ year, crop, state, setState, setTooltipContent }) => {
   useEffect(() => {
     const years = [2014, 2015, 2016, 2017, 2018, 2019, 2020];
     const promises = years.map((year) =>
-      csv(`csv/all_${year}.csv`).then((data) => {
+      csv(`csv/df_${year}.csv`).then((data) => {
         return data.reduce((acc, row) => {
             // Use the 'fips' field as the key
             acc[`${row.fips}-${row.crop}`] = row;
