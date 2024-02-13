@@ -69,6 +69,9 @@ const County = ({
     new_arc_pay = Number(cur.new_arc_pay).toFixed(2)
     adj_arc_pay = Number(cur.adj_arc_pay).toFixed(2)
 
+    arc_pay = adj_arc_pay
+    // arc_pay = new_arc_pay
+
     found = true;
   }
 
