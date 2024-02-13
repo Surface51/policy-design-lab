@@ -102,7 +102,7 @@ const MapDisplay = ({ year, crop, state, setState, setTooltipContent, paymentTyp
 
   return (
     <div data-tip="" data-html={true} className="map-wrapper">
-      <ColorKey title={"ARC-CO Adjusted Payment Rate"} />
+      <ColorKey title={"Payment Scale"} />
       <div className="btn-group">
         <button
           className="btn btn-zoom-out"

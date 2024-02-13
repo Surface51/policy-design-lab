@@ -31,9 +31,10 @@ const ColorKey = ({ domain, range, width, height, title }) => {
     <div
       key="undefined"
       style={{
-        backgroundColor: "grey",
+        backgroundColor: "rgb(242, 242, 242)",
         width: "100%",
         height: `${height}px`,
+        border: "1px solid rgb(72, 72, 72)",
         textAlign: "center",
         display: "flex",
         justifyContent: "center",
