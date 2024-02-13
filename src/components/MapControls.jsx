@@ -12,8 +12,15 @@ const MapControls = ({
   setYear,
   state,
   year,
+  setPaymentType
 }) => {
   const [isPlaying, setIsPlaying] = useState(false);
+
+  const paymentOptions = [
+    { label: "ARCCO Payment", value: "arc" },
+    { label: "ARCCO Adjusted Payment", value: "adj_arc" },
+    { label: "EARCCO Payment", value: "new_arc" },
+  ];
 
   const cropOptions = [
     { label: "Barley", value: "Barley" },
@@ -102,6 +109,7 @@ const MapControls = ({
     2018: "2018",
     2019: "2019",
     2020: "2020",
+    2021: "2021",
   };
 
   const intervalTime = 1200;
@@ -110,7 +118,7 @@ const MapControls = ({
     if (isPlaying) {
       const interval = setInterval(() => {
         setYear((prevYear) => {
-          if (prevYear >= 2020) {
+          if (prevYear >= 2021) {
             // Stop playing when the slider reaches its end value
             setIsPlaying(false);
             return prevYear;
@@ -134,63 +142,82 @@ const MapControls = ({
   }, [crop]);
 
   return (
-    <div className="controls-container">
-      <div className="input-group play-controls">
-        <button
-          className="btn-play"
-          onClick={() => setIsPlaying(true)}
-          disabled={isPlaying}
-        >
-          <div className="sr-only">Play</div>
-        </button>
-        <button
-          className="btn-stop"
-          onClick={() => setIsPlaying(false)}
-          disabled={!isPlaying}
-        >
-          <div className="sr-only">Pause</div>
-        </button>
+    <div className="controls">
+      <div className="controls-container top-group">
+        <div className="input-group play-controls">
+          <button
+            className="btn-play"
+            onClick={() => setIsPlaying(true)}
+            disabled={isPlaying}
+          >
+            <div className="sr-only">Play</div>
+          </button>
+          <button
+            className="btn-stop"
+            onClick={() => setIsPlaying(false)}
+            disabled={!isPlaying}
+          >
+            <div className="sr-only">Pause</div>
+          </button>
+        </div>
+        <div className="input-group date-selector">
+          <div className="input-label">YEAR: {year}</div>
+          <Slider
+            marks={marks}
+            step={null}
+            defaultValue={2014}
+            min={2014}
+            max={2021}
+            onChange={(value) => {
+              if (!isPlaying) {
+                setYear(value);
+              }
+            }}
+            value={year}
+          />
+        </div>
       </div>
-      <div className="input-group date-selector">
-        <div className="input-label">YEAR: 2014</div>
-        <Slider
-          marks={marks}
-          step={null}
-          defaultValue={2014}
-          min={2014}
-          max={2020}
-          onChange={(value) => {
-            if (!isPlaying) {
-              setYear(value);
-            }
-          }}
-          value={year}
-        />
-      </div>
-      <div className="input-group dropdown">
-        <div className="input-label">STATE</div>
-        <Select
-          options={stateOptions}
-          values={[
-            {
-              value: state,
-              label: stateOptions.find((s) => s.value === state).label,
-            },
-          ]}
-          onChange={(value) => {
-            setState(value[0].value);
-          }}
-        />
-      </div>
-      <div className="input-group dropdown">
-        <div className="input-label">CROP TYPE</div>
-        <Select
-          options={cropOptions}
-          values={[cropOptions[4]]}
-          onChange={(value) => {
-            setCrop(value[0].value);
-          }}
-        />
+      <div className="controls-container bottom-group">
+        <div className="input-group dropdown">
+          <div className="input-label">STATE</div>
+          <Select
+            options={stateOptions}
+            values={[
+              {
+                value: state,
+                label: stateOptions.find((s) => s.value === state).label,
+              },
+            ]}
+            onChange={(value) => {
+              setState(value[0].value);
+            }}
+          />
+        </div>
+        <div className="input-group dropdown">
+          <div className="input-label">CROP TYPE</div>
+          <Select
+            options={cropOptions}
+            values={[cropOptions[4]]}
+            onChange={(value) => {
+              setCrop(value[0].value);
+            }}
+          />
+        </div>
+        <div className="input-group dropdown">
+          <div className="input-label">PAYMENT TYPE</div>
+          <Select
+            options={paymentOptions}
+            values={[
+              {
+                value: "arc",
+                label: "ARCCO Payment",
+              },
+            ]}
+            onChange={(value) => {
+              setPaymentType(value[0].value);
+            }}
+          />
+        </div>
       </div>
     </div>
   );

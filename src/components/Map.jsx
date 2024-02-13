@@ -10,6 +10,7 @@ const Map = ({ setCropImageName }) => {
   const [stateTypes, setStateTypes] = useState([]);
   const [state, setState] = useState("all");
   const [tooltipContent, setTooltipContent] = useState("");
+  const [paymentType, setPaymentType] = useState("arc");
 
   return (
     <section className="map-container container">
@@ -22,6 +23,8 @@ const Map = ({ setCropImageName }) => {
         state={state}
         stateTypes={stateTypes}
         setCropImageName={setCropImageName}
+        paymentType={paymentType}
+        setPaymentType={setPaymentType}
         year={year}
       />
       <hr />
@@ -33,6 +36,7 @@ const Map = ({ setCropImageName }) => {
         setState={setState}
         year={year}
         setTooltipContent={setTooltipContent}
+        paymentType={paymentType}
       />
       <ReactToolTip>{tooltipContent}</ReactToolTip>
       <hr />

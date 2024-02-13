@@ -27,6 +27,7 @@ const County = ({
   crop,
   state,
   year,
+  paymentType,
 }) => {
   const updateTooltip = ({ countyName, arcPay, dataPresent }) => {
     let content = (
@@ -58,19 +59,19 @@ const County = ({
   let found = false;
 
   if (cur && cur.crop === crop) {
-    // const benchmark_rev = cur.bchmk * cur.bchmk_prc;
-    // const guarantee = benchmark_rev * benchmark_ratio;
-    // const max_pay = benchmark_rev * 0.1;
-    // const act_rev = cur.act_yld * cur.nat_prc;
-    // const form = Math.max(guarantee - act_rev, 0);
-    // arc_pay = Math.min(max_pay, form);
-
     arc_pay = Number(cur.arc_pay).toFixed(2)
     new_arc_pay = Number(cur.new_arc_pay).toFixed(2)
     adj_arc_pay = Number(cur.adj_arc_pay).toFixed(2)
 
-    arc_pay = adj_arc_pay
-    // arc_pay = new_arc_pay
+    // arc_pay = adj_arc_pay
+
+    if (paymentType === "arc") {
+      // arc_pay = arc_pay;
+    } else if (paymentType === "new_arc") {
+      arc_pay = new_arc_pay;
+    } else if (paymentType === "adj_arc") {
+      arc_pay = adj_arc_pay;
+    }
 
     found = true;
   }

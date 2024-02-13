@@ -1,8 +1,21 @@
+.controls {
+    display: block;
+}
+
 .controls-container {
     display                 : grid;
-    grid-template-columns   : 10% 40% 1fr 1fr;
+    grid-template-columns   : 10% auto;
     // grid-template-columns: 1fr 1fr 1fr;
     gap                     : 3rem;
+
+    &.top-group {
+        margin-bottom: 2rem;
+    }
+
+    &.bottom-group {
+        margin-top: 2rem;
+        grid-template-columns: auto auto auto;
+    }
 
     .input-group {
         display       : flex;
@@ -95,7 +108,7 @@
 
     @media screen and (max-width: 768px) {
         display       : flex;
-        flex-direction: column-reverse;
+        flex-direction: column;
         gap           : .5rem;
         margin        : 0 1rem;
 

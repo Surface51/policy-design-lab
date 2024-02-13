@@ -11,7 +11,7 @@ import County from "./County";
 import State from "./State";
 import ColorKey from "./ColorKey";
 
-const MapDisplay = ({ year, crop, state, setState, setTooltipContent }) => {
+const MapDisplay = ({ year, crop, state, setState, setTooltipContent, paymentType }) => {
   const [data, setData] = useState([]);
   const [stateGeo, setStateGeo] = useState([]);
   const [geo, setGeo] = useState([]);
@@ -36,7 +36,7 @@ const MapDisplay = ({ year, crop, state, setState, setTooltipContent }) => {
   }, []);
 
   useEffect(() => {
-    const years = [2014, 2015, 2016, 2017, 2018, 2019, 2020];
+    const years = [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021];
     const promises = years.map((year) =>
       csv(`csv/crop-data-${year}.csv`).then((data) => {
         return data.reduce((acc, row) => {
@@ -154,6 +154,7 @@ const MapDisplay = ({ year, crop, state, setState, setTooltipContent }) => {
                     state={state}
                     year={year}
                     key={g.rsmKey}
+                    paymentType={paymentType}
                   />
                 );
               });
