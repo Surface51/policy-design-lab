@@ -29,7 +29,13 @@ const County = ({
   year,
   paymentType,
 }) => {
-  const updateTooltip = ({ countyName, arcPay, dataPresent }) => {
+  const updateTooltip = ({
+    countyName,
+    value,
+    diff,
+    arcTitle,
+    dataPresent,
+  }) => {
     let content = (
       <div className="tooltip-container">
         <div className="tooltip-header">{countyName}</div>
@@ -39,9 +45,23 @@ const County = ({
               <b>Year:</b> {year}
             </p>
             <p className="payment">
-              <b>ARC-CO Adjusted Payment Rate: </b>
-              {arcPay}
+              <b>{arcTitle}:&nbsp;</b>${value}
             </p>
+            {diff ? (
+              <div className="diff">
+                <p>
+                  <b>ARC-CO Payment:&nbsp;</b>${diff}
+                </p>
+                <p>
+                  <b>Difference: </b>{" "}
+                  <span className="color-primary">
+                    ${(value - diff).toFixed(2)}
+                  </span>
+                </p>
+              </div>
+            ) : (
+              <> </>
+            )}
           </div>
         ) : (
           <div className="tooltip-body">No Data Available</div>
@@ -59,11 +79,9 @@ const County = ({
   let found = false;
 
   if (cur && cur.crop === crop) {
-    arc_pay = Number(cur.arc_pay).toFixed(2)
-    new_arc_pay = Number(cur.new_arc_pay).toFixed(2)
-    adj_arc_pay = Number(cur.adj_arc_pay).toFixed(2)
-
-    // arc_pay = adj_arc_pay
+    arc_pay = Number(cur.arc_pay).toFixed(2);
+    new_arc_pay = Number(cur.new_arc_pay).toFixed(2);
+    adj_arc_pay = Number(cur.adj_arc_pay).toFixed(2);
 
     if (paymentType === "arc") {
       // arc_pay = arc_pay;
@@ -94,12 +112,24 @@ const County = ({
             found
               ? {
                   countyName: countyGeoData.properties.name,
-                  arcPay: `$${arc_pay}`,
+                  value: arc_pay,
+                  diff:
+                    paymentType === "new_arc" || paymentType === "adj_arc"
+                      ? Number(cur.arc_pay).toFixed(2)
+                      : false,
+                  arcTitle:
+                    paymentType === "new_arc"
+                      ? "New ARC-CO Payment"
+                      : paymentType === "adj_arc"
+                      ? "Adjusted ARC-CO Payment"
+                      : "ARC-CO Payment",
                   dataPresent: true,
                 }
               : {
                   countyName: countyGeoData.properties.name,
                   arcPay: "N/A",
+                  newArcPay: false,
+                  arcTitle: false,
                   dataPresent: false,
                 }
           );
