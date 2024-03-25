@@ -11,7 +11,14 @@ import County from "./County";
 import State from "./State";
 import ColorKey from "./ColorKey";
 
-const MapDisplay = ({ year, crop, state, setState, setTooltipContent, paymentType }) => {
+const MapDisplay = ({
+  year,
+  crop,
+  state,
+  setState,
+  setTooltipContent,
+  paymentType,
+}) => {
   const [data, setData] = useState([]);
   const [stateGeo, setStateGeo] = useState([]);
   const [geo, setGeo] = useState([]);
@@ -40,11 +47,11 @@ const MapDisplay = ({ year, crop, state, setState, setTooltipContent, paymentTyp
     const promises = years.map((year) =>
       csv(`csv/crop-data-${year}.csv`).then((data) => {
         return data.reduce((acc, row) => {
-            // Use the 'fips' field as the key
-            // ensure that fips key is 5 digits, if not add leading 0s
-            row.fips = row.fips.padStart(5, "0");
-            acc[`${row.fips}-${row.crop}`] = row;
-            return acc;
+          // Use the 'fips' field as the key
+          // ensure that fips key is 5 digits, if not add leading 0s
+          row.fips = row.fips.padStart(5, "0");
+          acc[`${row.fips}-${row.crop}`] = row;
+          return acc;
         }, {});
       })
     );
@@ -141,6 +148,9 @@ const MapDisplay = ({ year, crop, state, setState, setTooltipContent, paymentTyp
             setCenter(zoom.coordinates);
             setZoomLevel(zoom.zoom);
           }}
+          filterZoomEvent={(d3Event) => {
+            return d3Event.type !== "wheel" && !("ontouchstart" in window);
+          }}
         >
           <Geographies geography={geo} borders={"#fff"}>
             {({ geographies }) => {
@@ -166,7 +176,9 @@ const MapDisplay = ({ year, crop, state, setState, setTooltipContent, paymentTyp
           >
             {({ geographies }) => {
               setStateGeoData(geographies);
-              return geographies.map((geo) => <State stateGeoData={geo} setState={setState}/>);
+              return geographies.map((geo) => (
+                <State stateGeoData={geo} setState={setState} />
+              ));
             }}
           </Geographies>
         </ZoomableGroup>

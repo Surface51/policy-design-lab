@@ -14,6 +14,17 @@
     flex-direction: column;
 }
 
+.color-box {
+    display           : flex;
+    gap               : 5px;
+    background        : rgb(242, 242, 242);
+    width             : 100%;
+    text-align        : center;
+    justify-content   : center;
+    align-items       : center;
+    padding           : 20px 5px;
+}
+
 
 /* Responsive layout for mobile devices */
 @media (max-width: 768px) {
@@ -30,6 +41,8 @@
     }
 
     .color-box {
-        height: 80px !important;
+        flex-direction: column;
+        gap           : 0;
+        height        : 80px !important;
     }
 }

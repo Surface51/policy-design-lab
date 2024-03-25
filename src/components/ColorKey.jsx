@@ -22,7 +22,9 @@ const ColorKey = ({ domain, range, width, height, title }) => {
       }}
       className="color-box"
     >
-      {val.label}
+      {val.label.split(" ").map((word, index) => (
+        <div key={index}>{word}</div>
+      ))}
     </div>
   ));
 
