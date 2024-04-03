@@ -181,8 +181,8 @@ const MapDisplay = ({
             const [x, y] = incomingZoomEvent.coordinates;
 
             // Sensible bounds for the map
-            const [minX, minY] = [-158, 26];
-            const [maxX, maxY] = [-70, 46];
+            const [minX, minY] = [-140, 26];
+            const [maxX, maxY] = [-70, 70];
 
             // Ensure the center is within the bounds of the map
             const [newX, newY] = [
@@ -192,7 +192,7 @@ const MapDisplay = ({
 
             setCenter([newX, newY]);
             setZoomLevel(incomingZoomEvent.zoom);
-            // console.log(incomingZoomEvent.coordinates, center);
+            // console.log(incomingZoomEvent.coordinates, [newX, newY]);
           }}
           filterZoomEvent={(d3Event) => {
             return d3Event.type !== "wheel" && !("ontouchstart" in window);
