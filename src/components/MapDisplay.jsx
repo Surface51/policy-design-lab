@@ -27,6 +27,9 @@ const MapDisplay = ({
   const [center, setCenter] = useState([-96, 37.8]);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [stateGeoData, setStateGeoData] = useState([]);
+  const [mapWidth, setMapWidth] = useState(0);
+  const [mapHeight, setMapHeight] = useState(0);
+  const translatePadding = 50;
 
   useEffect(() => {
     json("json/counties-10m.json").then((data) => {
@@ -107,6 +110,30 @@ const MapDisplay = ({
     }
   }, [stateGeoData, state]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      const mapElement = document.getElementById("map-display");
+      if (mapElement) {
+        const rect = mapElement.getBoundingClientRect();
+        setMapWidth(rect.width);
+        setMapHeight(rect.height);
+
+        // console.log(`Map width: ${rect.width}, Map height: ${rect.height}`);
+      }
+    };
+
+    handleResize(); // Initial resize
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log({ mapWidth, mapHeight });
+  }, [mapHeight, mapWidth]);
+
   return (
     <div data-tip="" data-html={true} className="map-wrapper">
       <ColorKey title={"Payment Scale"} />
@@ -121,7 +148,9 @@ const MapDisplay = ({
         </button>
         <button
           className="btn btn-zoom-in"
-          onClick={() => setZoomLevel(zoomLevel + 0.5)}
+          onClick={() => {
+            setZoomLevel(zoomLevel + 0.5);
+          }}
           disabled={zoomLevel >= 3}
           title="Zoom In"
         >
@@ -140,17 +169,41 @@ const MapDisplay = ({
           </button>
         )}
       </div>
-      <ComposableMap projection="geoAlbersUsa" className="map-display">
+      <ComposableMap
+        projection="geoAlbersUsa"
+        className="map-display"
+        id="map-display"
+      >
         <ZoomableGroup
           center={center}
           zoom={zoomLevel}
-          onMoveEnd={(zoom) => {
-            setCenter(zoom.coordinates);
-            setZoomLevel(zoom.zoom);
+          onMoveEnd={(incomingZoomEvent) => {
+            const [x, y] = incomingZoomEvent.coordinates;
+
+            // Sensible bounds for the map
+            const [minX, minY] = [-158, 26];
+            const [maxX, maxY] = [-70, 46];
+
+            // Ensure the center is within the bounds of the map
+            const [newX, newY] = [
+              x < minX ? minX : x > maxX ? maxX : x,
+              y < minY ? minY : y > maxY ? maxY : y,
+            ];
+
+            setCenter([newX, newY]);
+            setZoomLevel(incomingZoomEvent.zoom);
+            // console.log(incomingZoomEvent.coordinates, center);
           }}
           filterZoomEvent={(d3Event) => {
             return d3Event.type !== "wheel" && !("ontouchstart" in window);
           }}
+          translateExtent={[
+            [-translatePadding, -translatePadding],
+            [
+              mapWidth * 0.75 + translatePadding,
+              mapHeight * 0.9 + translatePadding,
+            ],
+          ]}
         >
           <Geographies geography={geo} borders={"#fff"}>
             {({ geographies }) => {
@@ -177,7 +230,11 @@ const MapDisplay = ({
             {({ geographies }) => {
               setStateGeoData(geographies);
               return geographies.map((geo) => (
-                <State stateGeoData={geo} setState={setState} />
+                <State
+                  stateGeoData={geo}
+                  setState={setState}
+                  key={geo.rsmKey}
+                />
               ));
             }}
           </Geographies>
